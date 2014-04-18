@@ -1,0 +1,31 @@
+{
+  "onfly_yaw_rate_ki": 250.0, 
+  "client_side_xmode": false, 
+  "onfly_yaw_rate_kd": 0.0, 
+  "link_uri": "radio://0/30/2M", 
+  "input_device": "Controller", 
+  "slew_limit": 45, 
+  "onfly_roll_rate_kd": 0.0, 
+  "max_rp": 30, 
+  "ui_update_period": 100, 
+  "trim_pitch": 0.0, 
+  "onfly_roll_rate_ki": 100.0, 
+  "onfly_roll_rate_kp": 500.0, 
+  "onfly_pitch_rate_kp": 500.0, 
+  "device_config_mapping": {
+    "Controller": "xbox360_mode1"
+  }, 
+  "slew_rate": 30, 
+  "auto_reconnect": false, 
+  "max_yaw": 200, 
+  "flightmode": "Advanced", 
+  "enable_debug_driver": false, 
+  "onfly_pitch_rate_kd": 0.0, 
+  "open_tabs": "Flight Control,Parameters", 
+  "onfly_pitch_rate_ki": 100.0, 
+  "input_device_blacklist": "(VirtualBox|VMware)", 
+  "trim_roll": 0.0, 
+  "max_thrust": 99.99, 
+  "onfly_yaw_rate_kp": 500.0, 
+  "min_thrust": 30.0
+}
