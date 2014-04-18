@@ -306,13 +306,24 @@ class JoystickReader:
             trimmed_roll = roll + self._trim_roll
             trimmed_pitch = pitch + self._trim_pitch
 
+            TH_THRUST = 28000
             if onfly:
-                if thrust < 30000:
-                    thrust = 30000
+                if thrust < TH_THRUST + 12000:
+                    thrust = TH_THRUST + 12000
             else:
                 # limit thrust
-                if thrust > 30000:
-                    thrust = 30000
+                if thrust > TH_THRUST:
+                    thrust = TH_THRUST
+
+            if not onfly:
+
+                # trimmed_roll = yaw / 8
+                trimmed_pitch -= 1
+                trimmed_roll = 0
+                if trimmed_pitch > 13:
+                    trimmed_pitch = 13
+                elif trimmed_pitch < -13:
+                    trimmed_pitch = -13
 
             self.input_updated.call(trimmed_roll, trimmed_pitch, yaw, thrust)
         except Exception:
