@@ -176,11 +176,122 @@ class FlightTab(Tab, flight_tab_class):
         self.targetCalPitch.setValue(GuiConfig().get("trim_pitch"))
         self.targetCalRoll.setValue(GuiConfig().get("trim_roll"))
 
+        # Connect signals
+        self.dsbRollKp.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbRollKi.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbRollKd.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbPitchKp.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbPitchKi.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbPitchKd.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbYawKp.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbYawKi.valueChanged.connect(self._onfly_pid_changed)
+        self.dsbYawKd.valueChanged.connect(self._onfly_pid_changed)
+
+        # Load config
+        self._onfly_loading = True
+
+        self._onfly_roll_rate_kp = GuiConfig().get("onfly_roll_rate_kp")
+        self._onfly_roll_rate_ki = GuiConfig().get("onfly_roll_rate_ki")
+        self._onfly_roll_rate_kd = GuiConfig().get("onfly_roll_rate_kd")
+        self._onfly_pitch_rate_kp = GuiConfig().get("onfly_pitch_rate_kp")
+        self._onfly_pitch_rate_ki = GuiConfig().get("onfly_pitch_rate_ki")
+        self._onfly_pitch_rate_kd = GuiConfig().get("onfly_pitch_rate_kd")
+        self._onfly_yaw_rate_kp = GuiConfig().get("onfly_yaw_rate_kp")
+        self._onfly_yaw_rate_ki = GuiConfig().get("onfly_yaw_rate_ki")
+        self._onfly_yaw_rate_kd = GuiConfig().get("onfly_yaw_rate_kd")
+
+        self.dsbRollKp.setValue(self._onfly_roll_rate_kp)
+        self.dsbRollKi.setValue(self._onfly_roll_rate_ki)
+        self.dsbRollKd.setValue(self._onfly_roll_rate_kd)
+        self.dsbPitchKp.setValue(self._onfly_pitch_rate_kp)
+        self.dsbPitchKi.setValue(self._onfly_pitch_rate_ki)
+        self.dsbPitchKd.setValue(self._onfly_pitch_rate_kd)
+        self.dsbYawKp.setValue(self._onfly_yaw_rate_kp)
+        self.dsbYawKi.setValue(self._onfly_yaw_rate_ki)
+        self.dsbYawKd.setValue(self._onfly_yaw_rate_kd)
+
+        self._onfly_loading = False
+
+    def _onfly_pid_changed(self):
+        if self._onfly_loading: return
+
+        self._onfly_roll_rate_kp = self.dsbRollKp.value()
+        self._onfly_roll_rate_ki = self.dsbRollKi.value()
+        self._onfly_roll_rate_kd = self.dsbRollKd.value()
+
+        self._onfly_pitch_rate_kp = self.dsbPitchKp.value()
+        self._onfly_pitch_rate_ki = self.dsbPitchKi.value()
+        self._onfly_pitch_rate_kd = self.dsbPitchKd.value()
+
+        self._onfly_yaw_rate_kp = self.dsbYawKp.value()
+        self._onfly_yaw_rate_ki = self.dsbYawKi.value()
+        self._onfly_yaw_rate_kd = self.dsbYawKd.value()
+
+        GuiConfig().set("onfly_roll_rate_kp", self._onfly_roll_rate_kp)
+        GuiConfig().set("onfly_roll_rate_ki", self._onfly_roll_rate_ki)
+        GuiConfig().set("onfly_roll_rate_kd", self._onfly_roll_rate_kd)
+
+        GuiConfig().set("onfly_pitch_rate_kp", self._onfly_pitch_rate_kp)
+        GuiConfig().set("onfly_pitch_rate_ki", self._onfly_pitch_rate_ki)
+        GuiConfig().set("onfly_pitch_rate_kd", self._onfly_pitch_rate_kd)
+
+        GuiConfig().set("onfly_yaw_rate_kp", self._onfly_yaw_rate_kp)
+        GuiConfig().set("onfly_yaw_rate_ki", self._onfly_yaw_rate_ki)
+        GuiConfig().set("onfly_yaw_rate_kd", self._onfly_yaw_rate_kd)
+
+    # def _onfly_roll_changed(self):
+    #     self._onfly_roll_rate_kp = self.dsbRollKp.value()
+    #     self._onfly_roll_rate_ki = self.dsbRollKi.value()
+    #     self._onfly_roll_rate_kd = self.dsbRollKd.value()
+    #
+    #     GuiConfig().set("onfly_roll_rate_kp", self._onfly_roll_rate_kp)
+    #     GuiConfig().set("onfly_roll_rate_ki", self._onfly_roll_rate_ki)
+    #     GuiConfig().set("onfly_roll_rate_kd", self._onfly_roll_rate_kd)
+
     def onFlyChanged(self, onfly):
+
         if onfly:
-            pass
+            # Set PID
+            roll_rate_kp = 70
+            roll_rate_ki = 0
+            roll_rate_kd = 0
+
+            pitch_rate_kp = 70
+            pitch_rate_ki = 0
+            pitch_rate_kd = 0
+
+            yaw_rate_kp = 50
+            yaw_rate_ki = 25
+            yaw_rate_kd = 0
+
+            self.lblOnFly.setText("crazyflie")
+
         else:
-            pass
+            roll_rate_kp = self._onfly_roll_rate_kp
+            roll_rate_ki = self._onfly_roll_rate_ki
+            roll_rate_kd = self._onfly_roll_rate_kd
+
+            pitch_rate_kp = self._onfly_pitch_rate_kp
+            pitch_rate_ki = self._onfly_pitch_rate_ki
+            pitch_rate_kd = self._onfly_pitch_rate_kd
+
+            yaw_rate_kp = self._onfly_yaw_rate_kp
+            yaw_rate_ki = self._onfly_yaw_rate_ki
+            yaw_rate_kd = self._onfly_yaw_rate_kd
+
+            self.lblOnFly.setText("crazybike")
+
+        # Set param
+        self.helper.cf.param.set_value("pid_rate.roll_kp", roll_rate_kp)
+        self.helper.cf.param.set_value("pid_rate.roll_ki", roll_rate_ki)
+        self.helper.cf.param.set_value("pid_rate.roll_kd", roll_rate_kd)
+        self.helper.cf.param.set_value("pid_rate.pitch_kp", pitch_rate_kp)
+        self.helper.cf.param.set_value("pid_rate.pitch_ki", pitch_rate_ki)
+        self.helper.cf.param.set_value("pid_rate.pitch_kd", pitch_rate_kd)
+        self.helper.cf.param.set_value("pid_rate.yaw_kp", yaw_rate_kp)
+        self.helper.cf.param.set_value("pid_rate.yaw_ki", yaw_rate_ki)
+        self.helper.cf.param.set_value("pid_rate.yaw_kd", yaw_rate_kd)
+
 
     def thrustToPercentage(self, thrust):
         return ((thrust / MAX_THRUST) * 100.0)
